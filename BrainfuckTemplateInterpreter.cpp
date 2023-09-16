@@ -456,7 +456,7 @@ namespace MchExecuterNs
 
     struct InvalidMachine : Machine<
                                 InitProgramStorage<'X'>::type,
-                                InitMemoryStorage<'X'>::type,
+                                InitMemoryStorage<0>::type,
                                 Tape<'E', 'r', 'r', 'o', 'r', '!'>>
     {
     };
@@ -586,7 +586,7 @@ namespace MchExecuterNs
     struct MoveToMatchingBracketImpl<Mch, ']', ']', N, false> : MoveToMatchingBracketImpl<
                                                                     typename Mch::rewPC, ']',
                                                                     Mch::rewPC::prg::curr, N + 1,
-                                                                    Mch::rewPC::prg::isLastChar>
+                                                                    Mch::rewPC::prg::isFirstChar>
     {
     };
 
@@ -594,7 +594,7 @@ namespace MchExecuterNs
     struct MoveToMatchingBracketImpl<Mch, ']', '[', N, false> : MoveToMatchingBracketImpl<
                                                                     typename Mch::rewPC, ']',
                                                                     Mch::rewPC::prg::curr, N - 1,
-                                                                    Mch::rewPC::prg::isLastChar>
+                                                                    Mch::rewPC::prg::isFirstChar>
     {
     };
 
@@ -602,7 +602,7 @@ namespace MchExecuterNs
     struct MoveToMatchingBracketImpl<Mch, ']', C, N, false> : MoveToMatchingBracketImpl<
                                                                   typename Mch::rewPC, ']',
                                                                   Mch::rewPC::prg::curr, N,
-                                                                  Mch::rewPC::prg::isLastChar>
+                                                                  Mch::rewPC::prg::isFirstChar>
     {
     };
 
@@ -681,6 +681,16 @@ int main(int argc, char **argv)
     {
         using initMachine = typename InitMachine<'+','+','+','[','-','>','+','+','+','[','-','>','+','+','+','+','<',']','<',']','>','>','.','>','+','+','+','[','-','>','+','+','+','[','-','>','+','+','+','[','-','>','+','+','<',']','<',']','<',']','>','>','>','.'>::type;
         printf("\nMachine (Prints:'$6'):\n------------\n%s\n------------\n", MachineExecuter<initMachine>::asDBGTape::cstr);
+    }
+
+    {
+        using initMachine = typename InitMachine<'+','[','+','+','>',']','<',']'>::type;
+        printf("\nMachine (Errors):\n------------\n%s\n------------\n", MachineExecuter<initMachine>::asDBGTape::cstr);
+    }
+
+    {
+        using initMachine = typename InitMachine<'[','+','[','+','+',']','-'>::type;
+        printf("\nMachine (Errors):\n------------\n%s\n------------\n", MachineExecuter<initMachine>::asDBGTape::cstr);
     }
 }
 
